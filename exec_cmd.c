@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_cmd.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: luhego <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/26 15:26:31 by luhego            #+#    #+#             */
+/*   Updated: 2023/10/26 15:59:28 by luhego           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
-char *find_path(char *path_lst, char *cmd)
+char	*find_path(char *path_lst, char *cmd)
 {
-	int     path_size;
-	int     cmd_size;
-	char    *origin_path;
+	int		path_size;
+	int		cmd_size;
+	char	*origin_path;
 
 	path_size = ft_strlen(path_lst) + 1;
 	cmd_size = ft_strlen(cmd) + 1;
@@ -17,11 +29,11 @@ char *find_path(char *path_lst, char *cmd)
 	return (origin_path);
 }
 
-char *get_path(char **env, char *cmd)
+char	*get_path(char **env, char *cmd)
 {
-	char **path_lst;
-	char *path;
-	int i;
+	char	**path_lst;
+	char	*path;
+	int		i;
 
 	i = 0;
 	while (ft_strncmp("PATH=", env[i], 5) != 0)
@@ -39,48 +51,14 @@ char *get_path(char **env, char *cmd)
 	}
 	return (NULL);
 }
-/*
-pid_t    exec_cmd(char *argv, char **env, int input[2], int output[2])
-{
-	char    **cmd;
-	pid_t   pid;
 
-	pid = fork();
-	if (pid == -1)
-	{
-		write(1, "fork, error\n", 12);
-		exit(0);
-	}
-	if (pid == 0)
-	{
-		dup2(input[0], STDIN_FILENO);
-		if (input[1] == -1)
-		{
-			dup2(output[1], STDOUT_FILENO);
-			close(output[0]);
-		}
-		else
-			dup2(output[0], 1);
-		cmd = ft_split(argv, ' ');
-		if (access(cmd[0], X_OK) == -1)
-			cmd[0] = get_path(env, cmd[0]);
-		execve(cmd[0], &cmd[0], env); //CMD1
-		exit(0);
-	}
-	close(input[0]);
-	if (input[1] == -1)
-		close(output[1]);
-	return(pid);
-}*/
-
-void   exec_cmd(char *argv, char **env)
+void	exec_cmd(char *argv, char **env)
 {
-	char **cmd;
+	char	**cmd;
 
 	cmd = ft_split(argv, ' ');
-//	if (cmd)
-//		free(cmd);
 	if (access(cmd[0], X_OK) == -1)
 		cmd[0] = get_path(env, cmd[0]);
 	execve(cmd[0], &cmd[0], env);
+	ft_free_double_tab(cmd);
 }
